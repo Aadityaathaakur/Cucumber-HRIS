@@ -1,0 +1,108 @@
+package StepsExecution;
+
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+
+public class Steps {				
+
+    
+   WebDriver driver;
+   WebDriverWait wait;
+
+@Given("^Open the Chrome and launch gMail$")
+public void open_the_Chrome_and_launch_gMail() throws Throwable {
+	
+	System.setProperty("webdriver.chrome.driver", "/home/qainfotech/Desktop/chromedriver");
+	driver = (WebDriver) new ChromeDriver();
+	driver.get("http://gmail.com/");
+	driver.manage().window().maximize();
+	 wait = new WebDriverWait(driver,50); 
+	
+	
+    // Write code here that turns the phrase above into concrete actions
+    //throw new PendingException();
+}
+
+@When("^Enter the Username and Password$")
+public void enter_the_Username_and_Password() throws Throwable {
+	 getUserNameEntry().sendKeys("apscadi@gmail.com");
+		driver.findElement(By.xpath("//*[@id='identifierNext']/content/span")).click();
+		driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS) ;
+		getPasswordEntry().sendKeys("9936760286");
+	
+		
+     wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(text(),'Next')]")));
+     driver.findElement(By.xpath("//span[contains(text(),'Next')]")).click();
+
+		//return driver.getTitle();
+	
+    // Write code here that turns the phrase above into concrete actions
+    //throw new PendingException();
+}
+
+@Then("^Redirectsto next Page$")
+public void redirectsto_next_Page() throws Throwable {
+	System.out.println(driver.getTitle());
+	Assert.assertEquals(driver.getTitle(), "Gmail");
+    // Write code here that turns the phrase above into concrete actions
+    //throw new PendingException();
+}
+
+
+
+
+
+
+@Given("^Compose Of Gmail Message$")
+public void compose_Of_Gmail_Message() throws Throwable {
+	
+	
+	 wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@gh='cm']")));
+     driver.findElement(By.xpath("//div[@gh='cm']")).click();
+	
+	// Write code here that turns the phrase above into concrete actions
+   // throw new PendingException();
+}
+
+@When("^Enter Email Address Of Receiptant$")
+public void enter_Email_Address_Of_Receiptant() throws Throwable {
+	driver.findElement(By.xpath("//div/textarea[@role='combobox']")).sendKeys("apscadi@gmail.com");
+	driver.findElement(By.xpath("//div/input[@name='subjectbox']")).sendKeys("This Is a Subjext");
+	driver.findElement(By.xpath("//div/div[@aria-label='Message Body']")).sendKeys("This Is a Msz To be sent");
+	driver.findElement(By.xpath("//tr/td/div/div[@class='T-I J-J5-Ji aoO T-I-atl L3']")).click();
+	
+	// Write code here that turns the phrase above into concrete actions
+    //throw new PendingException();
+}
+
+@Then("^Message Successsfully Sent$")
+public void message_Successsfully_Sent() throws Throwable {
+	 String msz=driver.findElement(By.xpath("//span[contains(text(),'Message sent.')]")).getText();
+	
+	 Assert.assertEquals(msz,"Message sent.");
+	// Assert.assertEquals(driver.getTitle(), "Gmail");
+	// Write code here that turns the phrase above into concrete actions
+    //throw new PendingException();
+}
+
+
+private  WebElement getUserNameEntry(){
+    return driver.findElement(By.xpath("//*[@id='identifierId']"));
+}
+
+private  WebElement getPasswordEntry(){
+    return driver.findElement(By.xpath("//*[@id='password']/div[1]/div/div[1]/input"));
+}
+
+}
